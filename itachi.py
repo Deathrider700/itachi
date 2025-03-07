@@ -29,7 +29,7 @@ BINS_API_URL = 'https://bins.antipublic.cc/bins/'
 BOT_USERS_FILE = 'bot_users.json'
 USER_GATES_FILE = 'user_gates.json'
 REGISTERED_USERS_FILE = 'registered_users.json'
-cred = credentials.Certificate("goku-69ee4-firebase-adminsdk-fbsvc-eae961d717.json)
+cred = credentials.Certificate("goku-69ee4-firebase-adminsdk-fbsvc-eae961d717.json")
 firebase_admin.initialize_app(cred)
 
 db = firestore.client()
