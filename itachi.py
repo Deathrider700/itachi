@@ -1,3 +1,5 @@
+import firebase_admin
+from firebase_admin import credentials, firestore
 import requests
 import telebot
 import time
@@ -27,6 +29,10 @@ BINS_API_URL = 'https://bins.antipublic.cc/bins/'
 BOT_USERS_FILE = 'bot_users.json'
 USER_GATES_FILE = 'user_gates.json'
 REGISTERED_USERS_FILE = 'registered_users.json'
+cred = credentials.Certificate("goku-69ee4-firebase-adminsdk-fbsvc-eae961d717.json)
+firebase_admin.initialize_app(cred)
+
+db = firestore.client()
 
 PLAN_DURATIONS = {
     "3hours": timedelta(hours=3),
@@ -75,18 +81,24 @@ def register_user(user_id):
 
 def load_json_file(filename, default=None):
     try:
-        with open(filename, 'r') as f:
-            return json.load(f)
-    except (FileNotFoundError, json.JSONDecodeError) as e:
-        logging.error(f"Error loading JSON file {filename}: {e}")
+        collection_name = filename.replace('.json', '')  # Use filename as Firestore collection
+        doc_ref = db.collection(collection_name).document("data")
+        doc = doc_ref.get()
+        if doc.exists:
+            return doc.to_dict().get("json_data", default)
+        return default if default is not None else {}
+    except Exception as e:
+        print(f"Error loading {filename} from Firestore: {e}")
         return default if default is not None else {}
 
 def save_json_file(filename, data):
     try:
-        with open(filename, 'w') as f:
-            json.dump(data, f, indent=4)
+        collection_name = filename.replace('.json', '')  # Use filename as Firestore collection
+        doc_ref = db.collection(collection_name).document("data")  # Single document
+        doc_ref.set({"json_data": data})
+        print(f"Saved {filename} to Firestore successfully!")
     except Exception as e:
-        logging.error(f"Error saving JSON file {filename}: {e}")
+        print(f"Error saving {filename} to Firestore: {e}")
 
 def generate_random_email(length=8, domain=None):
     common_domains = ["gmail.com", "yahoo.com", "outlook.com", "hotmail.com"]
