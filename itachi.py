@@ -886,7 +886,7 @@ def send_fake_details_gen(message,bot):
     f"💼 *Job:* `{fake.job()}`\n"
     f"🌐 *Website:* `{fake.url()}`\n"
     f"💳 *Credit Card:* `{fake.credit_card_full()}`"
-        )
+)
 
         bot.reply_to(message, fake_data, parse_mode="Markdown")
 
